@@ -1,5 +1,6 @@
 package guru.springframework.listener;
 
+import guru.springframework.SpringBootActiveMQApplication;
 import guru.springframework.domain.Product;
 import guru.springframework.repositories.ProductRepository;
 import org.apache.log4j.Logger;
@@ -13,13 +14,13 @@ import java.util.Map;
  * message as the parameter.
  */
 @Component
-public class MailSender {
+public class MessageListener {
 
     private ProductRepository productRepository;
 
-    private static final Logger log = Logger.getLogger(MailSender.class);
+    private static final Logger log = Logger.getLogger(MessageListener.class);
 
-    public MailSender(ProductRepository productRepository) {
+    public MessageListener(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
@@ -28,21 +29,14 @@ public class MailSender {
      * See {@link guru.springframework.SpringBootActiveMQApplication} for more details
      * @param message
      */
-    @JmsListener(destination = "our-mail-queue", containerFactory = "myFactory")
+    @JmsListener(destination = SpringBootActiveMQApplication.PRODUCT_MESSAGE_QUEUE, containerFactory = "jmsFactory")
     public void receiveMessage(Map<String, String> message) {
         log.info("Received <" + message + ">");
         Long id = Long.valueOf(message.get("id"));
         Product product = productRepository.findOne(id);
-        product.setMailsSent(true);
-
-        log.info(
-          "Receiver is sleeping for 10 seconds to simulate mail sending process");
-        try {
-            Thread.currentThread().sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        product.setMessageReceived(true);
+        product.setMessageCount(product.getMessageCount() + 1);
         productRepository.save(product);
-        log.info("Sent all emails...");
+        log.info("Message processed...");
     }
 }

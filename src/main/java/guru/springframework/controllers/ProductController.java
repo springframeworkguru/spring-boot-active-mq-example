@@ -32,12 +32,9 @@ public class ProductController {
 
     private ProductToProductForm productToProductForm;
 
-    private JmsTemplate jmsTemplate;
-
     @Autowired
-    public void setProductToProductForm(ProductToProductForm productToProductForm, JmsTemplate jmsTemplate) {
+    public void setProductToProductForm(ProductToProductForm productToProductForm) {
         this.productToProductForm = productToProductForm;
-        this.jmsTemplate = jmsTemplate;
     }
 
     @Autowired
@@ -95,12 +92,9 @@ public class ProductController {
         return "redirect:/product/list";
     }
 
-    @RequestMapping("/product/indexProduct/{id}")
+    @RequestMapping("/product/sendMessage/{id}")
     public String indexProduct(@PathVariable String id){
-        Map<String, String> actionmap = new HashMap<>();
-        actionmap.put("id", id);
-        log.info("Sending the index request through queue message");
-        jmsTemplate.convertAndSend("our-mail-queue", actionmap);
+        productService.sendMessage(id);
         return "redirect:/product/show/"+id;
     }
 }

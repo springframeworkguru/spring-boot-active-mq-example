@@ -16,7 +16,8 @@ public class Product {
     private String description;
     private BigDecimal price;
     private String imageUrl;
-    private boolean mailsSent;
+    private boolean messageReceived;
+    private Integer messageCount = 0; //init to zero
 
     public Long getId() {
         return id;
@@ -50,11 +51,19 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public boolean isMailsSent() {
-        return mailsSent;
+    public boolean isMessageReceived() {
+        return messageReceived;
     }
 
-    public void setMailsSent(boolean mailsSent) {
-        this.mailsSent = mailsSent;
+    public void setMessageReceived(boolean messageReceived) {
+        this.messageReceived = messageReceived;
+    }
+
+    public Integer getMessageCount() {
+        return messageCount;
+    }
+
+    public void setMessageCount(Integer messageCount) {
+        this.messageCount = messageCount;
     }
 }
