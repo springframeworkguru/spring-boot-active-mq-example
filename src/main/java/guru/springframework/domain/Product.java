@@ -2,6 +2,7 @@ package guru.springframework.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
 /**
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 @Entity
 public class Product {
 
-    @javax.persistence.Id
+    @Id
     @GeneratedValue
     private Long id;
     private String description;
