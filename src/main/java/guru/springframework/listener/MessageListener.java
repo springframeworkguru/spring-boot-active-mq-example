@@ -3,7 +3,8 @@ package guru.springframework.listener;
 import guru.springframework.SpringBootActiveMQApplication;
 import guru.springframework.domain.Product;
 import guru.springframework.repositories.ProductRepository;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,7 @@ public class MessageListener {
 
     private ProductRepository productRepository;
 
-    private static final Logger log = Logger.getLogger(MessageListener.class);
+    private static final Logger log = LogManager.getLogger(MessageListener.class);
 
     public MessageListener(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -33,7 +34,7 @@ public class MessageListener {
     public void receiveMessage(Map<String, String> message) {
         log.info("Received <" + message + ">");
         Long id = Long.valueOf(message.get("id"));
-        Product product = productRepository.findOne(id);
+        Product product = productRepository.findById(id).orElse(null);
         product.setMessageReceived(true);
         product.setMessageCount(product.getMessageCount() + 1);
         productRepository.save(product);
